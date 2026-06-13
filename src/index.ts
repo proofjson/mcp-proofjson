@@ -34,8 +34,20 @@ const TOOLS = [
   },
   {
     name: "verify_proofjson_proof",
-    description: "Verify whether a ProofJSON proof is structurally valid and intact. " + SCOPE_NOTE,
-    inputSchema: { type: "object", properties: { proof: { type: "object" } }, required: ["proof"] },
+    description:
+      "Verify a ProofJSON proof for structure, hash consistency and signature validity. This tool does NOT " +
+      "verify the real-world truth of the underlying claim, invoice, payment, supplier identity, IBAN ownership " +
+      "or sanctions status. " + SCOPE_NOTE,
+    inputSchema: {
+      type: "object",
+      properties: {
+        proof: { type: "object" },
+        expected_subject: { type: "string" },
+        expected_hash: { type: "string" },
+        options: { type: "object" },
+      },
+      required: ["proof"],
+    },
   },
   {
     name: "list_proofjson_packs",
@@ -59,6 +71,15 @@ async function listPacks() {
   return { live_packs: j.live_packs ?? [], free_tier: j.free_tier, scope_note: SCOPE_NOTE };
 }
 
+async function verifyProof(args: unknown) {
+  const r = await fetch(BASE + "/v1/proofs/verify", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(args ?? {}),
+  });
+  return await r.json(); // preserves valid, status, scope, checks_performed, checks_not_performed, non_claims
+}
+
 const server = new Server({ name: "proofjson", version: "0.1.0" }, { capabilities: { tools: {} } });
 
 server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: TOOLS }));
@@ -70,12 +91,7 @@ server.setRequestHandler(CallToolRequestSchema, async (req) => {
   try {
     if (name === "assess_invoice_before_payment") result = await assessInvoice(args);
     else if (name === "list_proofjson_packs") result = await listPacks();
-    else if (name === "verify_proofjson_proof")
-      // /v1/proofs/verify is not live yet — return an honest structured response, never crash.
-      result = {
-        error: "not_yet_available",
-        note: "Proof verification endpoint (/v1/proofs/verify) is not yet live. " + SCOPE_NOTE,
-      };
+    else if (name === "verify_proofjson_proof") result = await verifyProof(args);
     else result = { error: "unknown_tool", name };
   } catch (e) {
     result = { error: "call_failed", detail: String(e) };

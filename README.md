@@ -8,7 +8,7 @@ A **local** [MCP](https://modelcontextprotocol.io) server (stdio) that lets MCP 
 
 ## Tools (exactly three)
 - `assess_invoice_before_payment` — returns `allow` / `review` / `block` with reasons, confidence, scope, checks_performed, checks_not_performed, human_confirmation_required.
-- `verify_proofjson_proof` — proof verification (endpoint not yet live → returns an honest structured response, no crash).
+- `verify_proofjson_proof` — verify a proof for structure, hash consistency and signature validity. Does NOT verify the real-world truth of the underlying claim, invoice, supplier identity, IBAN ownership or sanctions status.
 - `list_proofjson_packs` — lists the live Pack Tasks.
 
 This server does **not** expose arbitrary fetch, a browser, a shell, the filesystem, a generic HTTP proxy, a generic run endpoint, or any internal scoring.

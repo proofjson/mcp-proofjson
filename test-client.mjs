@@ -41,10 +41,14 @@ if (block.decision !== "block") throw new Error("assess block failed");
 const packs = await call("list_proofjson_packs", {});
 console.log("PACKS:", (packs.live_packs || []).length);
 
-const verify = await call("verify_proofjson_proof", { proof: {} });
-console.log("VERIFY (honest not-yet):", verify.error);
-if (verify.error !== "not_yet_available") throw new Error("verify should be honest not_yet_available");
+const verify = await call("verify_proofjson_proof", {
+  proof: { proof_id: "p1", issued_at: "2026-06-13T10:00:00Z", subject: "invoice:INV-1", payload: { decision: "review" } },
+  expected_subject: "invoice:INV-1",
+});
+console.log("VERIFY:", verify.status, "· real_world_claim_verified:", verify.scope?.real_world_claim_verified);
+if (verify.status !== "valid_unsigned") throw new Error("verify valid_unsigned failed: " + verify.status);
+if (verify.scope?.real_world_claim_verified !== false) throw new Error("verify must not claim real-world verification");
 
-console.log("MCP TESTS: PASS — 3 tools, allow/review/block, scope preserved, honest verify, no crash");
+console.log("MCP TESTS: PASS — 3 tools, allow/review/block, scope preserved, proof verify live + honest, no crash");
 await client.close();
 process.exit(0);
