@@ -3,8 +3,19 @@
   "version": "0.1.0",
   "description": "ProofJSON MCP server (stdio) — assess invoices before payment, supplied_data_only. Local only; no public remote.",
   "type": "module",
-  "bin": { "mcp-proofjson": "dist/index.js" },
-  "scripts": { "build": "tsc", "start": "node dist/index.js" },
-  "dependencies": { "@modelcontextprotocol/sdk": "^1.0.0" },
-  "devDependencies": { "typescript": "^5.5.0", "@types/node": "^20.0.0" }
+  "bin": {
+    "mcp-proofjson": "dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.0",
+    "@types/node": "^20.0.0"
+  },
+  "mcpName": "io.github.heldertnn-glitch/mcp-proofjson"
 }
