@@ -1,8 +1,10 @@
 # mcp-proofjson
 
-A **local** [MCP](https://modelcontextprotocol.io) server (stdio) that lets MCP clients (Claude Desktop, Cursor, etc.) call ProofJSON to **assess invoices before payment**.
+A **local** [MCP](https://modelcontextprotocol.io) server (stdio) that lets AI agents produce and verify **structured JSON outputs** — with explicit scope, checks performed, checks not performed and human-confirmation requirements, instead of opaque yes/no answers.
 
-> **Scope (v1):** `supplied_data_only`. It assesses the supplied invoice data, supplied context and configured policy. It does **not** independently verify supplier IBAN ownership, sanctions status, bank account ownership or external payment history unless external trust adapters are configured. `allow` is not a guarantee the invoice is safe.
+The first live pack focuses on **invoice assessment before payment**: given supplied invoice data, context and policy, it returns `allow` / `review` / `block` with reasons and confidence. Works in Claude Desktop, Cursor and other MCP clients.
+
+> **Scope (v1):** `supplied_data_only`. It assesses the supplied data and configured policy. It does **not** independently verify supplier IBAN ownership, sanctions status, bank account ownership or external payment history unless external trust adapters are configured. `allow` is not a guarantee the invoice is safe.
 >
 > Local stdio only — there is **no public remote MCP** until auth, rate limits, audit logs, terms and privacy are finalised.
 
